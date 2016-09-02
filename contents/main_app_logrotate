@@ -1,0 +1,8 @@
+/var/segment/app/contents/contents.log {
+    missingok
+    notifempty
+    compress
+    size 1M
+    rotate 5
+    create 0600 root root
+}

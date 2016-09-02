@@ -1,0 +1,12 @@
+{
+	"ImportPath": "github.com/rakeshnair/tracking-poc/contents",
+	"GoVersion": "go1.7",
+	"GodepVersion": "v74",
+	"Deps": [
+		{
+			"ImportPath": "gopkg.in/natefinch/lumberjack.v2",
+			"Comment": "v1.0-21-g514cbda",
+			"Rev": "514cbda263a734ae8caac038dadf05f8f3f9f738"
+		}
+	]
+}

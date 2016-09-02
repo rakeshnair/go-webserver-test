@@ -1,0 +1,5 @@
+* * * * * root echo "Running cron health checker" >> /var/log/cron.log 2>&1
+
+* * * * * root /bin/sh /var/segment/app/main_app_logrotate.sh >> /var/log/cron.log 2>&1
+
+
