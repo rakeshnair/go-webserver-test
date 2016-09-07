@@ -21,7 +21,8 @@ type Event struct {
 }
 
 var (
-	Log *log.Logger
+	Log      *log.Logger
+	EventLog *lumberjack.Logger
 )
 
 func check(e error) {
@@ -39,13 +40,18 @@ func setup() {
 		os.Mkdir(dir, 0744)
 		Log.Println("Creating the content directory")
 	}
-	log.SetOutput(&lumberjack.Logger{
+	EventLog = &lumberjack.Logger{
 		Filename:   "/var/segment/app/contents/lumberjack-contents.log",
 		MaxSize:    1, // megabytes
 		MaxBackups: 3,
 		MaxAge:     28, //days
-	})
-	log.SetFlags(0)
+	}
+}
+
+func write(msg []byte) {
+	EventLog.Write(msg)
+	EventLog.Write([]byte("\n"))
+
 }
 
 func streamWriter() {
@@ -60,7 +66,6 @@ func streamWriter() {
 
 		// Open the scanner to read from the file
 		scanner := bufio.NewScanner(rfile)
-		//var buf bytes.Buffer
 
 		// Continue using the contents from the file till we reach EOF
 		for scanner.Scan() {
@@ -70,7 +75,7 @@ func streamWriter() {
 			event := Event{tokens[0], tokens[1], age, time.Now().UnixNano()}
 			b, err := json.Marshal(event)
 			if err == nil {
-				log.Println(string(b))
+				write(b)
 				time.Sleep(1 * time.Millisecond)
 			}
 		}
@@ -81,14 +86,14 @@ func streamWriter() {
 func main() {
 
 	// Opening log file for writing
-	f, err := os.OpenFile("/var/segment/log/streaming-app.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, os.ModeAppend)
-	if err != nil {
+	lf, e1 := os.OpenFile("/var/segment/log/streaming-app.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	if e1 != nil {
 		Log.Println("Could not open log file")
-		panic(err)
+		panic(e1)
 	}
-	defer f.Close()
+	defer lf.Close()
 
-	Log = log.New(f, "INFO", log.Ldate|log.Ltime|log.Lshortfile)
+	Log = log.New(lf, "INFO", log.Ldate|log.Ltime|log.Lshortfile)
 
 	setup()
 
