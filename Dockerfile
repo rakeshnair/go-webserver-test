@@ -10,6 +10,8 @@ RUN apt-get update --fix-missing && apt-get install -y \
 
 # Install Go
 ENV GOPATH="/root/dev"
+ARG GOPATH
+ENV GOPATH $GOPATH
 RUN cd /usr/local && \
   curl -L# https://storage.googleapis.com/golang/go1.6.2.linux-amd64.tar.gz | \
   tar -zx && \
@@ -19,5 +21,5 @@ RUN cd /usr/local && \
 RUN go get github.com/tools/godep
 RUN go get github.com/rakeshnair/go-streaming-app
 
-WORKDIR /root/dev/src/github.com/rakeshnair/go-streaming-app
+WORKDIR $GOPATH/src/github.com/rakeshnair/go-streaming-app
 CMD go run main.go
