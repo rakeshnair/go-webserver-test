@@ -20,16 +20,17 @@ RUN go get github.com/tools/godep
 RUN go get github.com/rakeshnair/go-streaming-app
 
 # Install Heka
-ENV HEKA_APP_DIR heka-0_10_0-linux-amd64
-ENV HEKA_DOWNLOAD_URL https://github.com/mozilla-services/heka/releases/download/v0.10.0/$HEKA_APP_DIR.tar.gz
+ENV HEKA_FILE_NAME heka-0_10_0-linux-amd64
+ENV HEKA_VERSION 0.10.0
+ENV HEKA_DOWNLOAD_URL https://github.com/mozilla-services/heka/releases/download/v$HEKA_VERSION/$HEKA_FILE_NAME.tar.gz
 ENV HEKA_MD5 89ff62fe2ccad3d462c9951de0c15e38
 
-#echo "${HEKA_MD5}  ${HEKA_APP_DIR}.tar.gz" | md5sum --check && \
-
 RUN cd /usr/local && \
-    curl -L $HEKA_DOWNLOAD_URL | \
-    tar -zx && \
-    mv $HEKA_APP_DIR heka
+    curl -LO $HEKA_DOWNLOAD_URL && \
+    echo "$HEKA_MD5  $HEKA_FILE_NAME.tar.gz" | md5sum --check && \
+    echo "$HEKA_FILE_NAME.tar.gz" | xargs tar -zxf && \
+    mv $HEKA_FILE_NAME heka && \
+    echo "$HEKA_FILE_NAME.tar.gz" | xargs rm -rf
 
 WORKDIR $GOPATH/src/github.com/rakeshnair/go-streaming-app
 CMD go run main.go
