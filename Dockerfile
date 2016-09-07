@@ -20,4 +20,4 @@ RUN go get github.com/tools/godep
 RUN go get github.com/rakeshnair/go-streaming-app
 
 WORKDIR /root/dev/src/github.com/rakeshnair/go-streaming-app
-CMD go run streaming.go
+CMD go run main.go
