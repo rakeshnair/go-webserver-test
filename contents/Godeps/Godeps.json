@@ -1,5 +1,5 @@
 {
-	"ImportPath": "github.com/rakeshnair/tracking-poc/contents",
+	"ImportPath": "github.com/rakeshnair/go-webserver-test/contents",
 	"GoVersion": "go1.7",
 	"GodepVersion": "v74",
 	"Deps": [

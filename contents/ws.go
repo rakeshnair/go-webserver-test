@@ -31,10 +31,12 @@ type Event struct {
 }
 
 const (
-	contentDir  string = "/var/segment/app/contents/"
-	seedDir     string = "/var/segment/app/seed/"
-	contentFile string = "contents.log"
-	logFile     string = "/var/segment/log/main.app.log"
+	contentDir      string        = "/var/segment/app/contents/"
+	seedDir         string        = "/var/segment/app/seed/"
+	contentFile     string        = "contents.log"
+	logFile         string        = "/var/segment/log/main.app.log"
+	bufCapacity     int           = 4096
+	sleepAfterWrite time.Duration = 10
 )
 
 var (
@@ -59,6 +61,7 @@ func initialize() {
 
 func check(e error) {
 	if e != nil {
+		ErrorLogger.Printf("Received unrecoverable error, %v", e)
 		panic(e)
 	}
 }
@@ -158,17 +161,6 @@ func randomFile(dirname string) string {
 	return files[randomIndex].Name()
 }
 
-func sigHUPHandler() {
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, syscall.SIGHUP)
-
-	go func() {
-		for sig := range c {
-			WarnLogger.Printf("Got a HUP signal(%v). Ignoring for now", sig)
-		}
-	}()
-}
-
 func main() {
 	// Opening log file for writing
 	f, err := os.OpenFile(logFile, os.O_CREATE|os.O_APPEND|os.O_WRONLY, os.ModeAppend)
@@ -190,8 +182,6 @@ func main() {
 	http.HandleFunc("/view", viewHandler)
 	http.HandleFunc("/list", listHandler)
 	http.HandleFunc("/write", writeHandler)
-
-	sigHUPHandler()
 
 	http.ListenAndServe(":8080", nil)
 }

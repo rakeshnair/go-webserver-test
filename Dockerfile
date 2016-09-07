@@ -42,4 +42,4 @@ RUN chmod 0644 /etc/cron.d/main_app_crontab
 RUN touch /var/log/cron.log
 
 WORKDIR /var/segment/app
-CMD cron && go run main.go
+CMD cron && go run streaming.go
