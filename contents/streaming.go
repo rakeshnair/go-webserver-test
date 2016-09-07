@@ -2,8 +2,8 @@ package main
 
 import (
 	"bufio"
-	"bytes"
 	"encoding/json"
+	"gopkg.in/natefinch/lumberjack.v2"
 	"log"
 	"net/http"
 	"os"
@@ -21,9 +21,7 @@ type Event struct {
 }
 
 var (
-	file *os.File
-	err  error
-	Log  *log.Logger
+	Log *log.Logger
 )
 
 func check(e error) {
@@ -41,18 +39,16 @@ func setup() {
 		os.Mkdir(dir, 0744)
 		Log.Println("Creating the content directory")
 	}
+	log.SetOutput(&lumberjack.Logger{
+		Filename:   "/var/segment/app/contents/lumberjack-contents.log",
+		MaxSize:    1, // megabytes
+		MaxBackups: 3,
+		MaxAge:     28, //days
+	})
+	log.SetFlags(0)
 }
 
 func streamWriter() {
-	// Opening contents file for writing
-	file, err = os.OpenFile("/var/segment/app/contents/contents.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, os.ModeAppend)
-	if err != nil {
-		Log.Println("Could not open contents file")
-		panic(err)
-	}
-
-	defer file.Close()
-
 	files := [1]string{"/var/segment/app/seed/yob2015.txt"}
 	for _, f := range files {
 		Log.Printf("Reading new file %s\n", f)
@@ -64,7 +60,7 @@ func streamWriter() {
 
 		// Open the scanner to read from the file
 		scanner := bufio.NewScanner(rfile)
-		var buf bytes.Buffer
+		//var buf bytes.Buffer
 
 		// Continue using the contents from the file till we reach EOF
 		for scanner.Scan() {
@@ -74,12 +70,8 @@ func streamWriter() {
 			event := Event{tokens[0], tokens[1], age, time.Now().UnixNano()}
 			b, err := json.Marshal(event)
 			if err == nil {
-				buf.Write(b)
-				buf.Write([]byte("\n"))
-
-				file.Write(buf.Bytes())
-				time.Sleep(2 * time.Millisecond)
-				buf.Reset()
+				log.Println(string(b))
+				time.Sleep(1 * time.Millisecond)
 			}
 		}
 	}
