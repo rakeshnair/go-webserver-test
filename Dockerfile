@@ -17,13 +17,7 @@ RUN cd /usr/local && \
 
 # Install packages reqd by the application
 RUN go get github.com/tools/godep
-RUN go get "gopkg.in/natefinch/lumberjack.v2"
+RUN go get github.com/rakeshnair/go-streaming-app
 
-RUN mkdir -p /var/segment/log
-RUN mkdir -p /var/segment/app
-
-ADD contents/ /var/segment/app/
-RUN ls -la /var/segment/app/*
-
-WORKDIR /var/segment/app
+WORKDIR /root/dev/src/github.com/rakeshnair/go-streaming-app
 CMD go run streaming.go
