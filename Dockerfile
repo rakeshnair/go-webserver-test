@@ -30,7 +30,7 @@ RUN cd /usr/local && \
     echo "$HEKA_MD5  $HEKA_FILE_NAME.tar.gz" | md5sum --check && \
     echo "$HEKA_FILE_NAME.tar.gz" | xargs tar -zxf && \
     mv $HEKA_FILE_NAME heka && \
-    echo "$HEKA_FILE_NAME.tar.gz" | xargs rm -rf
+    rm -rf $HEKA_FILE_NAME.tar.gz
 
 WORKDIR $GOPATH/src/github.com/rakeshnair/go-streaming-app
 CMD go run main.go
