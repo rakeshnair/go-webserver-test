@@ -41,6 +41,10 @@ RUN mkdir /var/log/heka
 
 COPY contents/startup.sh $GOPATH/src/github.com/rakeshnair/go-streaming-app/
 
+# Create volume for dumping log files
+RUN mkdir /data && chmod 744 /data
+VOLUME /data
+
 WORKDIR $GOPATH/src/github.com/rakeshnair/go-streaming-app
 RUN chmod +x startup.sh
 CMD ["bash", "-C", "startup.sh"]

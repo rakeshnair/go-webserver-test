@@ -1,7 +1,7 @@
 [applog]
 type = "LogstreamerInput"
-log_directory = "/root/dev/src/github.com/rakeshnair/go-streaming-app/contents"
-file_match = 'lumberjack-contents\.log'
+log_directory = "/data"
+file_match = 'events\.log'
 
 [PayloadEncoder]
 append_newlines = false
