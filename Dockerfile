@@ -43,5 +43,4 @@ COPY contents/startup.sh $GOPATH/src/github.com/rakeshnair/go-streaming-app/
 
 WORKDIR $GOPATH/src/github.com/rakeshnair/go-streaming-app
 RUN chmod +x startup.sh
-CMD /bin/sh $GOPATH/src/github.com/rakeshnair/go-streaming-app/startup.sh
-    
+CMD ["bash", "-C", "startup.sh"]
