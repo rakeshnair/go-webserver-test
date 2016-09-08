@@ -1,0 +1,16 @@
+[applog]
+type = "LogstreamerInput"
+log_directory = "/root/dev/src/github.com/rakeshnair/go-streaming-app/contents"
+file_match = 'lumberjack-contents\.log'
+
+[PayloadEncoder]
+append_newlines = false
+
+[logdump]
+type = "FileOutput"
+message_matcher = "TRUE"
+path = "/var/log/heka/dump.log"
+perm = "666"
+flush_count = 100
+flush_operator = "OR"
+encoder = "PayloadEncoder"

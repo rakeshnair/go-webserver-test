@@ -32,5 +32,16 @@ RUN cd /usr/local && \
     mv $HEKA_FILE_NAME heka && \
     rm -rf $HEKA_FILE_NAME.tar.gz
 
+# Place the Heka config file
+RUN mkdir /usr/local/etc/heka
+COPY contents/heka/hekad.toml /usr/local/etc/heka
+
+# Create directory to store Heka file dumps
+RUN mkdir /var/log/heka
+
+COPY contents/startup.sh $GOPATH/src/github.com/rakeshnair/go-streaming-app/
+
 WORKDIR $GOPATH/src/github.com/rakeshnair/go-streaming-app
-CMD go run main.go
+RUN chmod +x startup.sh
+CMD /bin/sh $GOPATH/src/github.com/rakeshnair/go-streaming-app/startup.sh
+    

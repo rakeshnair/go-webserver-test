@@ -1,6 +1,7 @@
 version: '2'
 services:
   app:
-    image: go-webserver-test:1
+    build: .
+    image: go-webserver-test:latest
     ports:
      - "8080:8080"
