@@ -2,6 +2,12 @@ version: '2'
 services:
   app:
     build: .
-    image: raknair07/go-webserver-test:v1
+    image: raknair07/go-webserver-test:1
     ports:
-     - "8080:8080"
+      - "8080:8080"
+    volumes_from:
+      - heka
+    depends_on:
+      - heka
+  heka:
+    image: raknair07/docker-heka:1
